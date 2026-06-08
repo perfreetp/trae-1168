@@ -3,14 +3,8 @@ import { View, Text, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import styles from './index.module.scss';
 
-const orderMenus = [
-  { key: 'pending', label: '待确认', icon: '⏳', count: 1 },
-  { key: 'confirmed', label: '待出行', icon: '🚢', count: 2 },
-  { key: 'completed', label: '已完成', icon: '✅', count: 5 },
-  { key: 'cancelled', label: '已取消', icon: '❌', count: 0 },
-];
-
 const serviceMenus = [
+  { key: 'trips', label: '我的行程', icon: '🚢', page: '/pages/trip-list/index' },
   { key: 'favorites', label: '我的收藏', icon: '❤️', page: '/pages/favorites/index' },
   { key: 'reviews', label: '我的评价', icon: '⭐', page: '/pages/reviews/index' },
   { key: 'invoice', label: '发票管理', icon: '🧾', page: '/pages/invoice/index' },
@@ -25,10 +19,6 @@ const settingMenus = [
 ];
 
 const MinePage: React.FC = () => {
-  const handleOrderClick = (key: string) => {
-    console.info('[Mine] Order tab clicked:', key);
-  };
-
   const handleMenuClick = (key: string, page?: string) => {
     if (page) {
       Taro.navigateTo({ url: page });
@@ -49,21 +39,6 @@ const MinePage: React.FC = () => {
           <Text className={styles.userName}>海钓达人</Text>
           <Text className={styles.userPhone}>138****8888</Text>
         </View>
-      </View>
-
-      <View className={styles.statsRow}>
-        {orderMenus.map((item) => (
-          <View
-            key={item.key}
-            className={styles.statItem}
-            onClick={() => handleOrderClick(item.key)}
-          >
-            <View className={styles.badgeWrap}>
-              <Text className={styles.statNum}>{item.count}</Text>
-            </View>
-            <Text className={styles.statLabel}>{item.label}</Text>
-          </View>
-        ))}
       </View>
 
       <View className={styles.section}>

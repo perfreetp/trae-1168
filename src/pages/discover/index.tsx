@@ -8,12 +8,13 @@ import FishTag from '@/components/FishTag';
 import { ports } from '@/data/ports';
 import { fishSpecies } from '@/data/fish';
 import { boats } from '@/data/boats';
-import { schedules } from '@/data/schedules';
+import { useScheduleStore } from '@/store/schedules';
 import { weatherInfo } from '@/data/weather';
 import styles from './index.module.scss';
 
 const DiscoverPage: React.FC = () => {
   const [searchValue, setSearchValue] = useState('');
+  const schedules = useScheduleStore((s) => s.schedules);
 
   const popularBoats = boats.filter((b) => b.rating >= 4.8).slice(0, 4);
   const popularSchedules = schedules.filter((s) => s.availableSeats > 0).slice(0, 5);

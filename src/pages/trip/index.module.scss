@@ -235,3 +235,72 @@
   color: $color-price;
   font-weight: $font-weight-medium;
 }
+
+.personRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-sm 0;
+  border-bottom: 1rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.personName {
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+}
+
+.personPhone {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.relationText {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  margin-top: $spacing-xs;
+}
+
+.emptyState {
+  @include flex-center;
+  flex-direction: column;
+  padding-top: 200rpx;
+}
+
+.emptyIcon {
+  font-size: 80rpx;
+  margin-bottom: $spacing-md;
+}
+
+.emptyText {
+  font-size: $font-size-md;
+  color: $color-text-tertiary;
+}
+
+.cancelSection {
+  padding: $spacing-lg $page-padding $spacing-xl;
+}
+
+.cancelBtn {
+  @include button-reset;
+  width: 100%;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  background: $color-bg-card;
+  border: 1rpx solid $color-border;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+.cancelBtnText {
+  font-size: $font-size-md;
+  color: $color-error;
+  font-weight: $font-weight-medium;
+}

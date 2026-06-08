@@ -1,0 +1,167 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+}
+
+.tabs {
+  display: flex;
+  background: $color-bg-card;
+  border-bottom: 1rpx solid $color-divider;
+}
+
+.tabItem {
+  @include button-reset;
+  flex: 1;
+  height: 88rpx;
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  position: relative;
+  white-space: nowrap;
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+.tabItemActive {
+  color: $color-primary;
+  font-weight: $font-weight-semibold;
+}
+
+.tabIndicator {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48rpx;
+  height: 6rpx;
+  background: $color-primary;
+  border-radius: 3rpx;
+}
+
+.list {
+  padding: $spacing-md $page-padding;
+}
+
+.card {
+  background: $color-bg-card;
+  border-radius: $radius-md;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+  margin-bottom: $spacing-md;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.95;
+    transform: scale(0.98);
+  }
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.boatName {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  @include text-ellipsis;
+  flex: 1;
+  margin-right: $spacing-sm;
+}
+
+.statusBadge {
+  padding: 4rpx 16rpx;
+  border-radius: $radius-round;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.statusUpcoming {
+  background: #E3F2FD;
+}
+
+.statusUpcomingText {
+  font-size: $font-size-xs;
+  color: $color-primary;
+  white-space: nowrap;
+}
+
+.statusCompleted {
+  background: #E8F5E9;
+}
+
+.statusCompletedText {
+  font-size: $font-size-xs;
+  color: $color-success;
+  white-space: nowrap;
+}
+
+.statusCancelled {
+  background: #FFEBEE;
+}
+
+.statusCancelledText {
+  font-size: $font-size-xs;
+  color: $color-error;
+  white-space: nowrap;
+}
+
+.date {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-top: $spacing-sm;
+}
+
+.time {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  margin-top: 4rpx;
+}
+
+.port {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  margin-top: 4rpx;
+}
+
+.bottomRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: $spacing-sm;
+}
+
+.typeLabel {
+  font-size: $font-size-xs;
+  color: $color-tag-text;
+  background: $color-tag-bg;
+  padding: 2rpx 12rpx;
+  border-radius: $radius-xs;
+}
+
+.price {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-price;
+}
+
+.empty {
+  @include flex-center;
+  flex-direction: column;
+  padding-top: 160rpx;
+}
+
+.emptyIcon {
+  font-size: 80rpx;
+  margin-bottom: $spacing-md;
+}
+
+.emptyText {
+  font-size: $font-size-md;
+  color: $color-text-tertiary;
+}

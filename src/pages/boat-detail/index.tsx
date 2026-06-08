@@ -4,19 +4,42 @@ import Taro, { useRouter } from '@tarojs/taro';
 import ReviewItem from '@/components/ReviewItem';
 import { boats } from '@/data/boats';
 import { reviews } from '@/data/reviews';
+import { useScheduleStore } from '@/store/schedules';
 import styles from './index.module.scss';
 
 const BoatDetailPage: React.FC = () => {
   const router = useRouter();
   const boatId = router.params.id || 'b1';
   const [isCollected, setIsCollected] = useState(false);
+  const allSchedules = useScheduleStore((s) => s.schedules);
 
   const boat = useMemo(() => {
     return boats.find((b) => b.id === boatId) || boats[0];
   }, [boatId]);
 
+  const availableSchedules = useMemo(() => {
+    return allSchedules.filter((s) => s.boatId === boatId && s.availableSeats > 0);
+  }, [boatId, allSchedules]);
+
+  const hasAvailable = availableSchedules.length > 0;
+
   const handleBook = () => {
-    Taro.navigateTo({ url: `/pages/order/index?boatId=${boat.id}` });
+    if (!hasAvailable) {
+      Taro.showModal({
+        title: '提示',
+        content: '该船只近期船期已满员，是否前往日历选择其他日期？',
+        confirmText: '去看日历',
+        cancelText: '再看看',
+        success: (res) => {
+          if (res.confirm) {
+            Taro.switchTab({ url: '/pages/calendar/index' });
+          }
+        },
+      });
+      return;
+    }
+    const nextSchedule = availableSchedules[0];
+    Taro.navigateTo({ url: `/pages/order/index?scheduleId=${nextSchedule.id}` });
   };
 
   return (
@@ -43,6 +66,9 @@ const BoatDetailPage: React.FC = () => {
           <Text className={styles.wholePrice}>整船</Text>
           <Text className={styles.wholePriceValue}>¥{boat.price}</Text>
         </View>
+        {!hasAvailable && (
+          <Text className={styles.soldOutHint}>近期船期已满员，请查看日历选择其他日期</Text>
+        )}
       </View>
 
       <View className={styles.section}>
@@ -112,7 +138,7 @@ const BoatDetailPage: React.FC = () => {
           {isCollected ? '❤️' : '🤍'}
         </View>
         <View className={styles.bookBtn} onClick={handleBook}>
-          立即约船
+          {hasAvailable ? '立即约船' : '查看其他日期'}
         </View>
       </View>
     </View>

@@ -7,6 +7,7 @@ export default defineAppConfig({
     'pages/boat-detail/index',
     'pages/order/index',
     'pages/trip/index',
+    'pages/trip-list/index',
     'pages/favorites/index',
     'pages/reviews/index',
     'pages/invoice/index',

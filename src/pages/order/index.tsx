@@ -1,23 +1,29 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, Input, Button } from '@tarojs/components';
+import { View, Text, Input } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
-import { schedules } from '@/data/schedules';
 import { boats } from '@/data/boats';
 import { addOnItems } from '@/data/addons';
-import { useTripStore } from '@/store/trip';
+import { useScheduleStore } from '@/store/schedules';
+import { useTripListStore, type TripRecord } from '@/store/trip-list';
 import type { Companion, EmergencyContact, AddOnItem } from '@/types';
 import styles from './index.module.scss';
+
+const PHONE_REG = /^1[3-9]\d{9}$/;
 
 const OrderPage: React.FC = () => {
   const router = useRouter();
   const scheduleId = router.params.scheduleId;
   const boatId = router.params.boatId;
 
+  const allSchedules = useScheduleStore((s) => s.schedules);
+  const decreaseSeats = useScheduleStore((s) => s.decreaseSeats);
+  const addTrip = useTripListStore((s) => s.addTrip);
+
   const schedule = useMemo(() => {
-    if (scheduleId) return schedules.find((s) => s.id === scheduleId);
-    if (boatId) return schedules.find((s) => s.boatId === boatId);
-    return schedules[0];
-  }, [scheduleId, boatId]);
+    if (scheduleId) return allSchedules.find((s) => s.id === scheduleId);
+    if (boatId) return allSchedules.find((s) => s.boatId === boatId);
+    return allSchedules[0];
+  }, [scheduleId, boatId, allSchedules]);
 
   const boat = useMemo(() => {
     return boats.find((b) => b.id === (schedule?.boatId || boatId)) || boats[0];
@@ -26,14 +32,19 @@ const OrderPage: React.FC = () => {
   const [orderType, setOrderType] = useState<'whole' | 'shared'>('shared');
   const [addOns, setAddOns] = useState<AddOnItem[]>(addOnItems.map((a) => ({ ...a })));
   const [companions, setCompanions] = useState<Companion[]>([]);
+  const [bookerName, setBookerName] = useState('');
+  const [bookerPhone, setBookerPhone] = useState('');
   const [emergencyContact, setEmergencyContact] = useState<EmergencyContact>({
     name: '',
     phone: '',
     relation: '',
   });
+  const [validationMsg, setValidationMsg] = useState('');
 
-  const availableSeats = schedule?.availableSeats || boat.capacity;
-  const totalSeats = schedule?.totalSeats || boat.capacity;
+  const isSoldOut = schedule ? schedule.availableSeats <= 0 : false;
+
+  const availableSeats = schedule?.availableSeats ?? boat.capacity;
+  const totalSeats = schedule?.totalSeats ?? boat.capacity;
 
   const personCount = orderType === 'shared' ? (1 + companions.length) : 1;
   const sharedPricePerPerson = schedule?.sharedPrice || boat.sharedPrice;
@@ -46,6 +57,8 @@ const OrderPage: React.FC = () => {
   const canAddCompanion = orderType === 'shared'
     ? (personCount < availableSeats)
     : (personCount < totalSeats);
+
+  const canOrder = orderType === 'whole' ? true : (availableSeats > 0);
 
   const toggleAddOn = (id: string) => {
     setAddOns((prev) =>
@@ -81,15 +94,31 @@ const OrderPage: React.FC = () => {
       setCompanions([]);
     }
     setOrderType(type);
+    setValidationMsg('');
   };
 
-  const setTripData = useTripStore((s) => s.setTripData);
+  const validate = (): string => {
+    if (!canOrder) return '该船期已满员，无法预订拼位';
+    if (!bookerName.trim()) return '请填写预订人姓名';
+    if (!PHONE_REG.test(bookerPhone)) return '请填写正确的预订人手机号（11位）';
+    for (let i = 0; i < companions.length; i++) {
+      if (!companions[i].name.trim()) return `请填写同行人${i + 1}的姓名`;
+      if (!PHONE_REG.test(companions[i].phone)) return `同行人${i + 1}手机号格式不正确`;
+    }
+    if (!emergencyContact.name.trim()) return '请填写紧急联系人姓名';
+    if (!PHONE_REG.test(emergencyContact.phone)) return '请填写正确的紧急联系人手机号';
+    return '';
+  };
 
   const handleSubmit = () => {
-    if (!emergencyContact.name || !emergencyContact.phone) {
-      Taro.showToast({ title: '请填写紧急联系人', icon: 'none' });
+    const msg = validate();
+    if (msg) {
+      setValidationMsg(msg);
+      Taro.showToast({ title: msg, icon: 'none', duration: 2500 });
       return;
     }
+    setValidationMsg('');
+
     const portMeetingMap: Record<string, { point: string; address: string }> = {
       '嵊泗列岛港': { point: '嵊泗列岛港3号码头', address: '浙江省舟山市嵊泗县菜园镇基湖村' },
       '南澳岛港': { point: '南澳岛渔港码头', address: '广东省汕头市南澳县后宅镇' },
@@ -102,8 +131,15 @@ const OrderPage: React.FC = () => {
     };
     const currentPort = schedule?.portName || boat.portName;
     const meeting = portMeetingMap[currentPort] || { point: currentPort + '码头', address: '' };
+    const tripId = `T${Date.now()}`;
     const code = `HD${Date.now().toString(36).toUpperCase().slice(-8)}`;
-    setTripData({
+    const sid = schedule?.id || '';
+
+    decreaseSeats(sid, orderType === 'shared' ? personCount : 1);
+
+    const trip: TripRecord = {
+      id: tripId,
+      scheduleId: sid,
       boatName: schedule?.boatName || boat.name,
       captainName: boat.captain,
       date: schedule?.date || '',
@@ -113,14 +149,21 @@ const OrderPage: React.FC = () => {
       meetingAddress: meeting.address,
       orderType,
       personCount,
+      bookerName: bookerName.trim(),
+      bookerPhone: bookerPhone.trim(),
       companions: companions.filter((c) => c.name.trim()),
+      emergencyContact,
       addOns: selectedAddOns.map((a) => ({ name: a.name, price: a.price })),
       boardingCode: code,
-    });
-    console.info('[Order] Submit order:', { orderType, basePrice, addOnTotal, totalPrice, companions, emergencyContact });
+      totalPrice,
+      status: 'upcoming',
+      createdAt: Date.now(),
+    };
+    addTrip(trip);
+
     Taro.showToast({ title: '下单成功', icon: 'success' });
     setTimeout(() => {
-      Taro.navigateTo({ url: '/pages/trip/index' });
+      Taro.redirectTo({ url: `/pages/trip/index?tripId=${tripId}` });
     }, 1500);
   };
 
@@ -135,6 +178,9 @@ const OrderPage: React.FC = () => {
             <Text className={styles.boatTime}>
               {schedule?.date} {schedule?.startTime}-{schedule?.endTime}
             </Text>
+            {isSoldOut && (
+              <Text className={styles.soldOutHint}>该船期已满员，请选择其他日期</Text>
+            )}
           </View>
         </View>
       </View>
@@ -143,13 +189,14 @@ const OrderPage: React.FC = () => {
         <Text className={styles.sectionTitle}>预约方式</Text>
         <View className={styles.typeSelector}>
           <View
-            className={`${styles.typeOption} ${orderType === 'shared' ? styles.typeOptionActive : ''}`}
-            onClick={() => handleOrderTypeChange('shared')}
+            className={`${styles.typeOption} ${orderType === 'shared' ? styles.typeOptionActive : ''} ${isSoldOut ? styles.typeDisabled : ''}`}
+            onClick={() => !isSoldOut && handleOrderTypeChange('shared')}
           >
             <Text className={`${styles.typeLabel} ${orderType === 'shared' ? styles.typeLabelActive : ''}`}>
               拼位出海
             </Text>
             <Text className={styles.typePrice}>¥{schedule?.sharedPrice || boat.sharedPrice}/人</Text>
+            {isSoldOut && <Text className={styles.typeSoldOut}>已满</Text>}
           </View>
           <View
             className={`${styles.typeOption} ${orderType === 'whole' ? styles.typeOptionActive : ''}`}
@@ -160,6 +207,28 @@ const OrderPage: React.FC = () => {
             </Text>
             <Text className={styles.typePrice}>¥{schedule?.price || boat.price}/船</Text>
           </View>
+        </View>
+      </View>
+
+      <View className={styles.section}>
+        <Text className={styles.sectionTitle}>预订人信息</Text>
+        <View className={styles.formGroup}>
+          <Input
+            className={styles.formInput}
+            placeholder="预订人姓名"
+            value={bookerName}
+            onInput={(e) => setBookerName(e.detail.value)}
+          />
+        </View>
+        <View className={styles.formGroup}>
+          <Input
+            className={styles.formInput}
+            placeholder="预订人手机号"
+            type="number"
+            maxlength={11}
+            value={bookerPhone}
+            onInput={(e) => setBookerPhone(e.detail.value)}
+          />
         </View>
       </View>
 
@@ -202,8 +271,9 @@ const OrderPage: React.FC = () => {
               <View className={styles.formRowItem}>
                 <Input
                   className={styles.formInput}
-                  placeholder="手机号"
+                  placeholder="手机号（11位）"
                   type="number"
+                  maxlength={11}
                   value={c.phone}
                   onInput={(e) => updateCompanion(index, 'phone', e.detail.value)}
                 />
@@ -244,8 +314,9 @@ const OrderPage: React.FC = () => {
         <View className={styles.formGroup}>
           <Input
             className={styles.formInput}
-            placeholder="联系人手机号"
+            placeholder="联系人手机号（11位）"
             type="number"
+            maxlength={11}
             value={emergencyContact.phone}
             onInput={(e) => setEmergencyContact({ ...emergencyContact, phone: e.detail.value })}
           />
@@ -284,13 +355,22 @@ const OrderPage: React.FC = () => {
         </View>
       </View>
 
+      {validationMsg ? (
+        <View className={styles.validationBar}>
+          <Text className={styles.validationText}>{validationMsg}</Text>
+        </View>
+      ) : null}
+
       <View className={styles.bottomBar}>
         <View className={styles.bottomPriceInfo}>
           <Text className={styles.bottomTotalLabel}>合计</Text>
           <Text className={styles.bottomTotalPrice}>¥{totalPrice}</Text>
         </View>
-        <View className={styles.submitBtn} onClick={handleSubmit}>
-          提交订单
+        <View
+          className={`${styles.submitBtn} ${!canOrder ? styles.submitDisabled : ''}`}
+          onClick={canOrder ? handleSubmit : undefined}
+        >
+          {!canOrder ? '已满员' : '提交订单'}
         </View>
       </View>
     </View>

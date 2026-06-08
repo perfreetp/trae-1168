@@ -88,6 +88,13 @@
   color: $color-text-secondary;
 }
 
+.soldOutHint {
+  font-size: $font-size-sm;
+  color: $color-error;
+  margin-top: $spacing-sm;
+  font-weight: $font-weight-medium;
+}
+
 .section {
   margin-top: $spacing-md;
   background: $color-bg-card;

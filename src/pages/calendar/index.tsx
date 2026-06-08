@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, Button, ScrollView } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import ScheduleCard from '@/components/ScheduleCard';
-import { schedules } from '@/data/schedules';
+import { useScheduleStore } from '@/store/schedules';
 import { generateDateList } from '@/utils';
 import styles from './index.module.scss';
 
@@ -18,6 +18,7 @@ const CalendarPage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState(dateList[0].date);
   const [tideFilter, setTideFilter] = useState('all');
   const [showAvailableOnly, setShowAvailableOnly] = useState(false);
+  const schedules = useScheduleStore((s) => s.schedules);
 
   const filteredSchedules = useMemo(() => {
     let result = schedules.filter((s) => s.date === selectedDate);

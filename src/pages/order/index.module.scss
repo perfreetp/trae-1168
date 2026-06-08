@@ -314,3 +314,39 @@
     transform: scale(0.98);
   }
 }
+
+.submitDisabled {
+  background: $color-text-disabled;
+  opacity: 0.7;
+}
+
+.soldOutHint {
+  font-size: $font-size-sm;
+  color: $color-error;
+  margin-top: 8rpx;
+  font-weight: $font-weight-medium;
+}
+
+.typeDisabled {
+  opacity: 0.5;
+}
+
+.typeSoldOut {
+  font-size: $font-size-xs;
+  color: $color-error;
+  margin-top: 4rpx;
+}
+
+.validationBar {
+  margin: 0 $page-padding $spacing-md;
+  padding: $spacing-md;
+  background: #FFEBEE;
+  border-radius: $radius-md;
+  border: 1rpx solid #FFCDD2;
+}
+
+.validationText {
+  font-size: $font-size-sm;
+  color: $color-error;
+  line-height: $line-height-normal;
+}
