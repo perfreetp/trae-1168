@@ -1,0 +1,99 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding: $spacing-md $page-padding;
+}
+
+.card {
+  background: $color-bg-card;
+  border-radius: $radius-md;
+  padding: $spacing-lg;
+  box-shadow: $shadow-card;
+  margin-bottom: $spacing-md;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.boatName {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.date {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.ratingRow {
+  display: flex;
+  margin-top: $spacing-sm;
+}
+
+.starActive {
+  font-size: $font-size-md;
+  color: #FFB800;
+}
+
+.starInactive {
+  font-size: $font-size-md;
+  color: $color-text-disabled;
+}
+
+.content {
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  line-height: $line-height-loose;
+  margin-top: $spacing-sm;
+}
+
+.images {
+  display: flex;
+  gap: $spacing-sm;
+  margin-top: $spacing-sm;
+  flex-wrap: wrap;
+}
+
+.reviewImage {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: $radius-sm;
+}
+
+.deleteBtn {
+  @include button-reset;
+  margin-top: $spacing-md;
+  padding: 8rpx $spacing-md;
+  border-radius: $radius-round;
+  background: $color-bg-page;
+  border: 1rpx solid $color-border;
+  align-self: flex-end;
+}
+
+.deleteBtnText {
+  font-size: $font-size-xs;
+  color: $color-error;
+  white-space: nowrap;
+}
+
+.empty {
+  @include flex-center;
+  flex-direction: column;
+  padding-top: 160rpx;
+}
+
+.emptyIcon {
+  font-size: 80rpx;
+  margin-bottom: $spacing-md;
+}
+
+.emptyText {
+  font-size: $font-size-md;
+  color: $color-text-tertiary;
+}

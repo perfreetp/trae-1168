@@ -189,3 +189,49 @@
   color: $color-text-tertiary;
   margin-top: 8rpx;
 }
+
+.companionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-sm 0;
+  border-bottom: 1rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.companionName {
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+}
+
+.companionPhone {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.addonRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-sm 0;
+  border-bottom: 1rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.addonName {
+  font-size: $font-size-md;
+  color: $color-text-primary;
+}
+
+.addonPrice {
+  font-size: $font-size-md;
+  color: $color-price;
+  font-weight: $font-weight-medium;
+}

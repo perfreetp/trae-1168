@@ -1,33 +1,8 @@
 import React from 'react';
 import { View, Text } from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import { useTripStore } from '@/store/trip';
 import styles from './index.module.scss';
-
-const tripData = {
-  id: 't1',
-  orderId: 'o1',
-  boatName: '海风号',
-  captainName: '张海明',
-  date: '2026-06-09',
-  time: '06:00 - 14:00',
-  meetingPoint: '嵊泗列岛港3号码头',
-  meetingAddress: '浙江省舟山市嵊泗县菜园镇基湖村',
-  boardingCode: 'HD20260609',
-  status: 'upcoming' as const,
-  notes: [
-    '请提前30分钟到达集合点，逾期不候',
-    '请穿着防滑鞋和防晒服装',
-    '晕船者请提前服用晕船药',
-    '船上禁止吸烟，请遵守安全规定',
-    '如遇恶劣天气，船长有权取消或改期航次',
-    '出海期间请听从船长指挥，注意安全',
-  ],
-  captainNotices: [
-    { id: 'n1', content: '明天海况良好，东南风3级，适合出海。请大家做好防晒准备。', time: '2026-06-08 18:00' },
-    { id: 'n2', content: '集合点变更：因潮汐原因，改为3号码头集合，请注意查看导航。', time: '2026-06-08 20:30' },
-    { id: 'n3', content: '已备好活饵和冰袋，有额外需求的钓友请提前告知。', time: '2026-06-08 21:00' },
-  ],
-};
 
 const statusMap: Record<string, string> = {
   upcoming: '即将出发',
@@ -35,7 +10,23 @@ const statusMap: Record<string, string> = {
   completed: '已完成',
 };
 
+const defaultNotes = [
+  '请提前30分钟到达集合点，逾期不候',
+  '请穿着防滑鞋和防晒服装',
+  '晕船者请提前服用晕船药',
+  '船上禁止吸烟，请遵守安全规定',
+  '如遇恶劣天气，船长有权取消或改期航次',
+  '出海期间请听从船长指挥，注意安全',
+];
+
+const defaultNotices = [
+  { id: 'n1', content: '出海前一天请注意查看天气预报，做好相应准备。', time: '出发前1天' },
+  { id: 'n2', content: '请确认集合点位置，提前规划出行路线。', time: '出发前1天' },
+];
+
 const TripPage: React.FC = () => {
+  const tripData = useTripStore((s) => s.tripData);
+
   const handleNavigate = () => {
     Taro.openLocation({
       latitude: 30.73,
@@ -54,7 +45,7 @@ const TripPage: React.FC = () => {
         <View className={styles.statusRow}>
           <Text className={styles.statusText}>{tripData.boatName}</Text>
           <View className={styles.statusBadge}>
-            <Text className={styles.statusBadgeText}>{statusMap[tripData.status]}</Text>
+            <Text className={styles.statusBadgeText}>{statusMap.upcoming}</Text>
           </View>
         </View>
         <View className={styles.tripMeta}>
@@ -69,6 +60,12 @@ const TripPage: React.FC = () => {
           <View className={styles.metaRow}>
             <Text className={styles.metaLabel}>船长</Text>
             <Text className={styles.metaValue}>{tripData.captainName}</Text>
+          </View>
+          <View className={styles.metaRow}>
+            <Text className={styles.metaLabel}>方式</Text>
+            <Text className={styles.metaValue}>
+              {tripData.orderType === 'whole' ? '整船包船' : `拼位出海（${tripData.personCount}人）`}
+            </Text>
           </View>
         </View>
       </View>
@@ -96,10 +93,34 @@ const TripPage: React.FC = () => {
         </View>
       </View>
 
+      {tripData.companions.length > 0 && (
+        <View className={styles.section}>
+          <Text className={styles.sectionTitle}>同行人</Text>
+          {tripData.companions.map((c, idx) => (
+            <View key={idx} className={styles.companionRow}>
+              <Text className={styles.companionName}>{c.name || `同行人${idx + 1}`}</Text>
+              <Text className={styles.companionPhone}>{c.phone || '-'}</Text>
+            </View>
+          ))}
+        </View>
+      )}
+
+      {tripData.addOns.length > 0 && (
+        <View className={styles.section}>
+          <Text className={styles.sectionTitle}>加购项目</Text>
+          {tripData.addOns.map((a, idx) => (
+            <View key={idx} className={styles.addonRow}>
+              <Text className={styles.addonName}>{a.name}</Text>
+              <Text className={styles.addonPrice}>¥{a.price}</Text>
+            </View>
+          ))}
+        </View>
+      )}
+
       <View className={styles.section}>
         <Text className={styles.sectionTitle}>注意事项</Text>
         <View className={styles.notesList}>
-          {tripData.notes.map((note, idx) => (
+          {defaultNotes.map((note, idx) => (
             <View key={idx} className={styles.noteItem}>
               <View className={styles.noteDot} />
               <Text className={styles.noteText}>{note}</Text>
@@ -110,7 +131,7 @@ const TripPage: React.FC = () => {
 
       <View className={styles.section}>
         <Text className={styles.sectionTitle}>船长通知</Text>
-        {tripData.captainNotices.map((notice) => (
+        {defaultNotices.map((notice) => (
           <View key={notice.id} className={styles.noticeItem}>
             <Text className={styles.noticeContent}>{notice.content}</Text>
             <Text className={styles.noticeTime}>{notice.time}</Text>

@@ -219,6 +219,13 @@
   margin-top: $spacing-sm;
 }
 
+.seatsHint {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-top: $spacing-sm;
+  line-height: $line-height-normal;
+}
+
 .priceBreakdown {
   display: flex;
   flex-direction: column;

@@ -11,11 +11,11 @@ const orderMenus = [
 ];
 
 const serviceMenus = [
-  { key: 'favorites', label: '我的收藏', icon: '❤️' },
-  { key: 'reviews', label: '我的评价', icon: '⭐' },
-  { key: 'invoice', label: '发票管理', icon: '🧾' },
-  { key: 'deposit', label: '押金/退款', icon: '💰' },
-  { key: 'blacklist', label: '黑名单船只', icon: '🚫' },
+  { key: 'favorites', label: '我的收藏', icon: '❤️', page: '/pages/favorites/index' },
+  { key: 'reviews', label: '我的评价', icon: '⭐', page: '/pages/reviews/index' },
+  { key: 'invoice', label: '发票管理', icon: '🧾', page: '/pages/invoice/index' },
+  { key: 'deposit', label: '押金/退款', icon: '💰', page: '/pages/deposit/index' },
+  { key: 'blacklist', label: '黑名单船只', icon: '🚫', page: '/pages/blacklist/index' },
 ];
 
 const settingMenus = [
@@ -29,8 +29,12 @@ const MinePage: React.FC = () => {
     console.info('[Mine] Order tab clicked:', key);
   };
 
-  const handleMenuClick = (key: string) => {
-    console.info('[Mine] Menu clicked:', key);
+  const handleMenuClick = (key: string, page?: string) => {
+    if (page) {
+      Taro.navigateTo({ url: page });
+    } else {
+      console.info('[Mine] Menu clicked:', key);
+    }
   };
 
   return (
@@ -68,7 +72,7 @@ const MinePage: React.FC = () => {
           <View
             key={item.key}
             className={styles.menuItem}
-            onClick={() => handleMenuClick(item.key)}
+            onClick={() => handleMenuClick(item.key, item.page)}
           >
             <Text className={styles.menuIcon}>{item.icon}</Text>
             <Text className={styles.menuLabel}>{item.label}</Text>

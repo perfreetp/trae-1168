@@ -62,3 +62,208 @@
   font-size: $font-size-md;
   color: $color-text-tertiary;
 }
+
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  @include flex-center;
+}
+
+.detailWrap {
+  width: 620rpx;
+  max-width: 90vw;
+}
+
+.detailPanel {
+  background: $color-bg-card;
+  border-radius: $radius-xl;
+  overflow: hidden;
+  box-shadow: $shadow-popup;
+}
+
+.detailHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-lg $spacing-lg $spacing-sm;
+}
+
+.detailTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.detailClose {
+  @include button-reset;
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: $radius-round;
+  background: $color-bg-page;
+}
+
+.detailCloseText {
+  font-size: $font-size-md;
+  color: $color-text-tertiary;
+}
+
+.detailBody {
+  padding: 0 $spacing-lg $spacing-xl;
+}
+
+.detailBoat {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-primary;
+  margin-bottom: $spacing-sm;
+}
+
+.detailContent {
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  line-height: $line-height-loose;
+}
+
+.detailActions {
+  display: flex;
+  gap: $spacing-md;
+  margin-top: $spacing-xl;
+}
+
+.acceptBtn {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+}
+
+.acceptBtnText {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-white;
+  white-space: nowrap;
+}
+
+.rejectBtn {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  background: $color-bg-page;
+  border: 1rpx solid $color-border;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+  }
+}
+
+.rejectBtnText {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-secondary;
+  white-space: nowrap;
+}
+
+.statusTag {
+  margin-top: $spacing-xl;
+  @include flex-center;
+  padding: $spacing-md;
+  background: $color-bg-page;
+  border-radius: $radius-md;
+}
+
+.statusTagText {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-success;
+}
+
+.refundSection {
+  margin-top: $spacing-lg;
+  padding: $spacing-md;
+  background: $color-bg-page;
+  border-radius: $radius-md;
+}
+
+.refundLabel {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  margin-bottom: $spacing-sm;
+}
+
+.progressTrack {
+  height: 16rpx;
+  background: $color-border;
+  border-radius: $radius-round;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, $color-primary 0%, $color-primary-light 100%);
+  border-radius: $radius-round;
+  transition: width $transition-slow;
+}
+
+.progressText {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-top: $spacing-sm;
+}
+
+.groupSection {
+  margin-top: $spacing-lg;
+  padding: $spacing-md;
+  background: $color-bg-page;
+  border-radius: $radius-md;
+}
+
+.groupBar {
+  height: 20rpx;
+  background: $color-border;
+  border-radius: $radius-round;
+  overflow: hidden;
+}
+
+.groupBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, $color-primary 0%, $color-success 100%);
+  border-radius: $radius-round;
+  transition: width $transition-slow;
+}
+
+.groupProgress {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-top: $spacing-sm;
+}
+
+.groupStatus {
+  margin-top: $spacing-md;
+  @include flex-center;
+}
+
+.groupSuccess {
+  font-size: $font-size-md;
+  color: $color-success;
+  font-weight: $font-weight-medium;
+}
+
+.groupPending {
+  font-size: $font-size-md;
+  color: $color-warning;
+  font-weight: $font-weight-medium;
+}

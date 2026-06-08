@@ -74,6 +74,10 @@ export interface Message {
   read: boolean;
   boatName?: string;
   date?: string;
+  status?: 'pending' | 'accepted' | 'rejected' | 'refunding' | 'refunded' | 'grouped' | 'forming';
+  groupTotal?: number;
+  groupCurrent?: number;
+  refundProgress?: number;
 }
 
 export interface Order {

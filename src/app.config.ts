@@ -6,7 +6,12 @@ export default defineAppConfig({
     'pages/mine/index',
     'pages/boat-detail/index',
     'pages/order/index',
-    'pages/trip/index'
+    'pages/trip/index',
+    'pages/favorites/index',
+    'pages/reviews/index',
+    'pages/invoice/index',
+    'pages/deposit/index',
+    'pages/blacklist/index'
   ],
   window: {
     backgroundTextStyle: 'light',
