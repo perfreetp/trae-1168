@@ -1,0 +1,74 @@
+@use '@/styles/variables.scss' as *;
+
+.item {
+  padding: $spacing-lg 0;
+  border-bottom: 1rpx solid $color-divider;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: $radius-round;
+  flex-shrink: 0;
+}
+
+.userInfo {
+  flex: 1;
+  margin-left: $spacing-sm;
+}
+
+.userName {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+}
+
+.ratingRow {
+  display: flex;
+  margin-top: 2rpx;
+}
+
+.starActive {
+  font-size: $font-size-xs;
+  color: #FFB800;
+}
+
+.starInactive {
+  font-size: $font-size-xs;
+  color: $color-text-disabled;
+}
+
+.date {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  flex-shrink: 0;
+}
+
+.content {
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  line-height: $line-height-loose;
+  margin-top: $spacing-sm;
+}
+
+.images {
+  display: flex;
+  gap: $spacing-sm;
+  margin-top: $spacing-sm;
+  flex-wrap: wrap;
+}
+
+.reviewImage {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: $radius-sm;
+}

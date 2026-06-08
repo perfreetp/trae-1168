@@ -1,0 +1,309 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding-bottom: 160rpx;
+}
+
+.section {
+  background: $color-bg-card;
+  margin-bottom: $spacing-md;
+  padding: $spacing-lg $page-padding;
+  box-shadow: $shadow-card;
+}
+
+.sectionTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+}
+
+.boatSummary {
+  display: flex;
+  align-items: center;
+}
+
+.boatImage {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: $radius-md;
+  flex-shrink: 0;
+}
+
+.boatInfo {
+  flex: 1;
+  margin-left: $spacing-md;
+}
+
+.boatName {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  @include text-ellipsis;
+}
+
+.boatMeta {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  margin-top: 4rpx;
+}
+
+.boatTime {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-top: 4rpx;
+}
+
+.typeSelector {
+  display: flex;
+  gap: $spacing-md;
+}
+
+.typeOption {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-lg;
+  border-radius: $radius-md;
+  border: 2rpx solid $color-border;
+  background: $color-bg-card;
+  flex-direction: column;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+  }
+}
+
+.typeOptionActive {
+  border-color: $color-primary;
+  background: $color-tag-bg;
+}
+
+.typeLabel {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.typeLabelActive {
+  color: $color-primary;
+}
+
+.typePrice {
+  font-size: $font-size-sm;
+  color: $color-price;
+  margin-top: 4rpx;
+}
+
+.addonList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.addonItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.addonLeft {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.addonCheck {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: $radius-round;
+  border: 2rpx solid $color-border;
+  margin-right: $spacing-sm;
+  @include flex-center;
+  font-size: $font-size-sm;
+  color: $color-text-white;
+  flex-shrink: 0;
+  transition: all $transition-base;
+}
+
+.addonCheckActive {
+  background: $color-primary;
+  border-color: $color-primary;
+}
+
+.addonName {
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  @include text-ellipsis;
+  flex: 1;
+}
+
+.addonPrice {
+  font-size: $font-size-sm;
+  color: $color-price;
+  flex-shrink: 0;
+  margin-left: $spacing-sm;
+}
+
+.formGroup {
+  margin-bottom: $spacing-lg;
+}
+
+.formLabel {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  margin-bottom: $spacing-sm;
+}
+
+.formInput {
+  width: 100%;
+  height: $button-height-md;
+  background: $color-bg-page;
+  border-radius: $radius-md;
+  padding: 0 $spacing-md;
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  border: 1rpx solid $color-border;
+  box-sizing: border-box;
+}
+
+.formRow {
+  display: flex;
+  gap: $spacing-md;
+}
+
+.formRowItem {
+  flex: 1;
+}
+
+.companionCard {
+  background: $color-bg-page;
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  margin-bottom: $spacing-sm;
+}
+
+.companionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-sm;
+}
+
+.companionTitle {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+}
+
+.removeBtn {
+  @include button-reset;
+  font-size: $font-size-xs;
+  color: $color-error;
+  padding: 4rpx 12rpx;
+}
+
+.addCompanionBtn {
+  @include button-reset;
+  width: 100%;
+  height: $button-height-md;
+  border: 2rpx dashed $color-border;
+  border-radius: $radius-md;
+  background: transparent;
+  font-size: $font-size-md;
+  color: $color-primary;
+  margin-top: $spacing-sm;
+}
+
+.priceBreakdown {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.priceRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.priceRowLabel {
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+}
+
+.priceRowValue {
+  font-size: $font-size-md;
+  color: $color-text-primary;
+}
+
+.totalRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: $spacing-md;
+  border-top: 1rpx solid $color-divider;
+  margin-top: $spacing-sm;
+}
+
+.totalLabel {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.totalValue {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  color: $color-price;
+}
+
+.bottomBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  padding: $spacing-md $page-padding;
+  background: $color-bg-card;
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.06);
+  z-index: 10;
+}
+
+.bottomPriceInfo {
+  flex: 1;
+}
+
+.bottomTotalLabel {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.bottomTotalPrice {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  color: $color-price;
+}
+
+.submitBtn {
+  @include button-reset;
+  width: 280rpx;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-white;
+  margin-left: $spacing-md;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+}

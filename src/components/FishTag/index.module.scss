@@ -1,0 +1,41 @@
+@use '@/styles/variables.scss' as *;
+
+.tag {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  width: 160rpx;
+  padding: $spacing-sm;
+  background: $color-bg-card;
+  border-radius: $radius-md;
+  box-shadow: $shadow-card;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.95;
+    transform: scale(0.96);
+  }
+}
+
+.image {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: $radius-round;
+  margin-bottom: $spacing-xs;
+}
+
+.name {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  @include text-ellipsis;
+  max-width: 100%;
+  text-align: center;
+}
+
+.season {
+  font-size: 20rpx;
+  color: $color-text-tertiary;
+  margin-top: 2rpx;
+  white-space: nowrap;
+}
