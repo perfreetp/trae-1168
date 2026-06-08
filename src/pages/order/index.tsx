@@ -25,12 +25,15 @@ const OrderPage: React.FC = () => {
 
   const [orderType, setOrderType] = useState<'whole' | 'shared'>('shared');
   const [addOns, setAddOns] = useState<AddOnItem[]>(addOnItems.map((a) => ({ ...a })));
-  const [companions, setCompanions] = useState<Companion[]>([{ name: '', phone: '' }]);
+  const [companions, setCompanions] = useState<Companion[]>([]);
   const [emergencyContact, setEmergencyContact] = useState<EmergencyContact>({
     name: '',
     phone: '',
     relation: '',
   });
+
+  const availableSeats = schedule?.availableSeats || boat.capacity;
+  const totalSeats = schedule?.totalSeats || boat.capacity;
 
   const personCount = orderType === 'shared' ? (1 + companions.length) : 1;
   const sharedPricePerPerson = schedule?.sharedPrice || boat.sharedPrice;
@@ -40,9 +43,9 @@ const OrderPage: React.FC = () => {
     ? (schedule?.price || boat.price)
     : sharedPricePerPerson * personCount;
   const totalPrice = basePrice + addOnTotal;
-  const maxAvailable = orderType === 'shared'
-    ? (schedule?.availableSeats || boat.capacity)
-    : (schedule?.totalSeats || boat.capacity);
+  const canAddCompanion = orderType === 'shared'
+    ? (personCount < availableSeats)
+    : (personCount < totalSeats);
 
   const toggleAddOn = (id: string) => {
     setAddOns((prev) =>
@@ -57,18 +60,27 @@ const OrderPage: React.FC = () => {
   };
 
   const addCompanion = () => {
-    const canAdd = orderType === 'shared'
-      ? (companions.length + 1 < maxAvailable)
-      : (companions.length + 1 < maxAvailable);
-    if (canAdd) {
-      setCompanions((prev) => [...prev, { name: '', phone: '' }]);
-    } else {
+    if (!canAddCompanion) {
       Taro.showToast({ title: '余位不足，无法继续添加', icon: 'none' });
+      return;
     }
+    setCompanions((prev) => [...prev, { name: '', phone: '' }]);
   };
 
   const removeCompanion = (index: number) => {
     setCompanions((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleOrderTypeChange = (type: 'whole' | 'shared') => {
+    if (type === 'shared') {
+      const maxCompanions = availableSeats - 1;
+      if (companions.length > maxCompanions) {
+        setCompanions((prev) => prev.slice(0, Math.max(0, maxCompanions)));
+      }
+    } else {
+      setCompanions([]);
+    }
+    setOrderType(type);
   };
 
   const setTripData = useTripStore((s) => s.setTripData);
@@ -132,7 +144,7 @@ const OrderPage: React.FC = () => {
         <View className={styles.typeSelector}>
           <View
             className={`${styles.typeOption} ${orderType === 'shared' ? styles.typeOptionActive : ''}`}
-            onClick={() => setOrderType('shared')}
+            onClick={() => handleOrderTypeChange('shared')}
           >
             <Text className={`${styles.typeLabel} ${orderType === 'shared' ? styles.typeLabelActive : ''}`}>
               拼位出海
@@ -141,7 +153,7 @@ const OrderPage: React.FC = () => {
           </View>
           <View
             className={`${styles.typeOption} ${orderType === 'whole' ? styles.typeOptionActive : ''}`}
-            onClick={() => setOrderType('whole')}
+            onClick={() => handleOrderTypeChange('whole')}
           >
             <Text className={`${styles.typeLabel} ${orderType === 'whole' ? styles.typeLabelActive : ''}`}>
               整船包船
@@ -174,11 +186,9 @@ const OrderPage: React.FC = () => {
           <View key={index} className={styles.companionCard}>
             <View className={styles.companionHeader}>
               <Text className={styles.companionTitle}>同行人 {index + 1}</Text>
-              {companions.length > 1 && (
-                <View className={styles.removeBtn} onClick={() => removeCompanion(index)}>
-                  移除
-                </View>
-              )}
+              <View className={styles.removeBtn} onClick={() => removeCompanion(index)}>
+                移除
+              </View>
             </View>
             <View className={styles.formRow}>
               <View className={styles.formRowItem}>
@@ -201,7 +211,7 @@ const OrderPage: React.FC = () => {
             </View>
           </View>
         ))}
-        {orderType === 'shared' && companions.length + 1 >= maxAvailable ? null : (
+        {orderType === 'shared' && canAddCompanion && (
           <View className={styles.addCompanionBtn} onClick={addCompanion}>
             + 添加同行人
           </View>
@@ -209,7 +219,14 @@ const OrderPage: React.FC = () => {
         {orderType === 'shared' && (
           <Text className={styles.seatsHint}>
             预订人1位 + 同行人{companions.length}位 = 共{personCount}位，
-            剩余可约{Math.max(0, maxAvailable - personCount)}位
+            {availableSeats - personCount > 0
+              ? `剩余可约${availableSeats - personCount}位`
+              : '已约满全部余位'}
+          </Text>
+        )}
+        {orderType === 'whole' && (
+          <Text className={styles.seatsHint}>
+            整船包船最多载{totalSeats}人
           </Text>
         )}
       </View>

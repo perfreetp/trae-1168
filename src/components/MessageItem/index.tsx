@@ -23,7 +23,19 @@ const typeLabelMap: Record<string, string> = {
   notice: '通知',
 };
 
+const statusLabelMap: Record<string, { text: string; style: string }> = {
+  pending: { text: '待处理', style: styles.statusPending },
+  accepted: { text: '已接受', style: styles.statusAccepted },
+  rejected: { text: '已拒绝', style: styles.statusRejected },
+  refunding: { text: '退款中', style: styles.statusRefunding },
+  refunded: { text: '已退款', style: styles.statusRefunded },
+  grouped: { text: '已成团', style: styles.statusGrouped },
+  forming: { text: '拼团中', style: styles.statusForming },
+};
+
 const MessageItem: React.FC<MessageItemProps> = ({ message, onClick }) => {
+  const statusInfo = message.status ? statusLabelMap[message.status] : null;
+
   return (
     <View className={styles.item} onClick={() => onClick?.(message.id)}>
       <View className={classnames(styles.iconWrap, styles[message.type])}>
@@ -36,7 +48,14 @@ const MessageItem: React.FC<MessageItemProps> = ({ message, onClick }) => {
         </View>
         <Text className={styles.desc}>{message.content}</Text>
         <View className={styles.bottom}>
-          <Text className={styles.typeLabel}>{typeLabelMap[message.type]}</Text>
+          <View className={styles.tagsWrap}>
+            <Text className={styles.typeLabel}>{typeLabelMap[message.type]}</Text>
+            {statusInfo && (
+              <Text className={`${styles.statusTag} ${statusInfo.style}`}>
+                {statusInfo.text}
+              </Text>
+            )}
+          </View>
           <Text className={styles.time}>{message.time}</Text>
         </View>
       </View>

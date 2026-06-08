@@ -84,6 +84,14 @@
   margin-top: 8rpx;
 }
 
+.tagsWrap {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  flex: 1;
+  min-width: 0;
+}
+
 .typeLabel {
   font-size: $font-size-xs;
   color: $color-tag-text;
@@ -91,6 +99,49 @@
   padding: 2rpx 12rpx;
   border-radius: $radius-xs;
   white-space: nowrap;
+}
+
+.statusTag {
+  font-size: $font-size-xs;
+  padding: 2rpx 12rpx;
+  border-radius: $radius-xs;
+  white-space: nowrap;
+  font-weight: $font-weight-medium;
+}
+
+.statusPending {
+  color: #F57C00;
+  background: #FFF3E0;
+}
+
+.statusAccepted {
+  color: $color-success;
+  background: #E8F5E9;
+}
+
+.statusRejected {
+  color: $color-error;
+  background: #FFEBEE;
+}
+
+.statusRefunding {
+  color: $color-primary;
+  background: #E3F2FD;
+}
+
+.statusRefunded {
+  color: $color-success;
+  background: #E8F5E9;
+}
+
+.statusGrouped {
+  color: $color-success;
+  background: #E8F5E9;
+}
+
+.statusForming {
+  color: #F57C00;
+  background: #FFF3E0;
 }
 
 .time {
