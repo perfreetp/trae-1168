@@ -1,5 +1,14 @@
 import { create } from 'zustand';
 
+export type TripStatus = 'pending_payment' | 'upcoming' | 'completed' | 'cancelled';
+
+export interface PriceBreakdown {
+  boatFee: number;
+  addOnFee: number;
+  deposit: number;
+  total: number;
+}
+
 export interface TripRecord {
   id: string;
   scheduleId: string;
@@ -18,15 +27,21 @@ export interface TripRecord {
   emergencyContact: { name: string; phone: string; relation: string };
   addOns: Array<{ name: string; price: number }>;
   boardingCode: string;
+  priceBreakdown: PriceBreakdown;
   totalPrice: number;
-  status: 'upcoming' | 'completed' | 'cancelled';
+  status: TripStatus;
   createdAt: number;
+  paidAt?: number;
 }
+
+const PAY_TIMEOUT_MS = 15 * 60 * 1000;
 
 interface TripListStore {
   trips: TripRecord[];
   addTrip: (trip: TripRecord) => void;
+  payTrip: (tripId: string) => void;
   cancelTrip: (tripId: string) => void;
+  expireTrips: () => string[];
   getTripById: (id: string) => TripRecord | undefined;
 }
 
@@ -56,6 +71,15 @@ export const useTripListStore = create<TripListStore>((set, get) => ({
       return { trips: next };
     });
   },
+  payTrip: (tripId) => {
+    set((state) => {
+      const next = state.trips.map((t) =>
+        t.id === tripId ? { ...t, status: 'upcoming' as const, paidAt: Date.now() } : t
+      );
+      saveTrips(next);
+      return { trips: next };
+    });
+  },
   cancelTrip: (tripId) => {
     set((state) => {
       const next = state.trips.map((t) =>
@@ -65,5 +89,23 @@ export const useTripListStore = create<TripListStore>((set, get) => ({
       return { trips: next };
     });
   },
+  expireTrips: () => {
+    const now = Date.now();
+    const expiredIds: string[] = [];
+    set((state) => {
+      const next = state.trips.map((t) => {
+        if (t.status === 'pending_payment' && now - t.createdAt > PAY_TIMEOUT_MS) {
+          expiredIds.push(t.id);
+          return { ...t, status: 'cancelled' as const };
+        }
+        return t;
+      });
+      saveTrips(next);
+      return { trips: next };
+    });
+    return expiredIds;
+  },
   getTripById: (id) => get().trips.find((t) => t.id === id),
 }));
+
+export { PAY_TIMEOUT_MS };

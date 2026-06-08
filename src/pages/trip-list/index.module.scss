@@ -15,7 +15,7 @@
   @include button-reset;
   flex: 1;
   height: 88rpx;
-  font-size: $font-size-md;
+  font-size: $font-size-sm;
   color: $color-text-secondary;
   position: relative;
   white-space: nowrap;
@@ -79,6 +79,16 @@
   border-radius: $radius-round;
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+.statusPending {
+  background: #FFF8E1;
+}
+
+.statusPendingText {
+  font-size: $font-size-xs;
+  color: #E65100;
+  white-space: nowrap;
 }
 
 .statusUpcoming {
@@ -148,6 +158,29 @@
   font-size: $font-size-lg;
   font-weight: $font-weight-bold;
   color: $color-price;
+}
+
+.countdownRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-top: $spacing-sm;
+  padding-top: $spacing-sm;
+  border-top: 1rpx solid $color-divider;
+}
+
+.countdownTag {
+  font-size: $font-size-xs;
+  color: #E65100;
+  font-weight: $font-weight-semibold;
+  background: #FFF8E1;
+  padding: 2rpx 12rpx;
+  border-radius: $radius-xs;
+}
+
+.countdownHint {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
 }
 
 .empty {

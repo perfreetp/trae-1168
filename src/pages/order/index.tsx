@@ -1,10 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { View, Text, Input } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
 import { boats } from '@/data/boats';
 import { addOnItems } from '@/data/addons';
 import { useScheduleStore } from '@/store/schedules';
-import { useTripListStore, type TripRecord } from '@/store/trip-list';
+import { useTripListStore, type TripRecord, type PriceBreakdown } from '@/store/trip-list';
 import type { Companion, EmergencyContact, AddOnItem } from '@/types';
 import styles from './index.module.scss';
 
@@ -43,6 +43,13 @@ const OrderPage: React.FC = () => {
 
   const isSoldOut = schedule ? schedule.availableSeats <= 0 : false;
 
+  useEffect(() => {
+    if (isSoldOut && orderType === 'shared') {
+      setOrderType('whole');
+      setCompanions([]);
+    }
+  }, [isSoldOut]);
+
   const availableSeats = schedule?.availableSeats ?? boat.capacity;
   const totalSeats = schedule?.totalSeats ?? boat.capacity;
 
@@ -53,12 +60,13 @@ const OrderPage: React.FC = () => {
   const basePrice = orderType === 'whole'
     ? (schedule?.price || boat.price)
     : sharedPricePerPerson * personCount;
+  const deposit = Math.round(basePrice * 0.2);
   const totalPrice = basePrice + addOnTotal;
   const canAddCompanion = orderType === 'shared'
     ? (personCount < availableSeats)
     : (personCount < totalSeats);
 
-  const canOrder = orderType === 'whole' ? true : (availableSeats > 0);
+  const canOrder = orderType === 'whole' ? !isSoldOut : (availableSeats > 0);
 
   const toggleAddOn = (id: string) => {
     setAddOns((prev) =>
@@ -85,6 +93,7 @@ const OrderPage: React.FC = () => {
   };
 
   const handleOrderTypeChange = (type: 'whole' | 'shared') => {
+    if (type === 'shared' && isSoldOut) return;
     if (type === 'shared') {
       const maxCompanions = availableSeats - 1;
       if (companions.length > maxCompanions) {
@@ -98,7 +107,8 @@ const OrderPage: React.FC = () => {
   };
 
   const validate = (): string => {
-    if (!canOrder) return '该船期已满员，无法预订拼位';
+    if (isSoldOut) return '该船期已满员，无法预订';
+    if (!canOrder) return '该船期已满员，无法预订';
     if (!bookerName.trim()) return '请填写预订人姓名';
     if (!PHONE_REG.test(bookerPhone)) return '请填写正确的预订人手机号（11位）';
     for (let i = 0; i < companions.length; i++) {
@@ -134,8 +144,16 @@ const OrderPage: React.FC = () => {
     const tripId = `T${Date.now()}`;
     const code = `HD${Date.now().toString(36).toUpperCase().slice(-8)}`;
     const sid = schedule?.id || '';
+    const isWholeBoat = orderType === 'whole';
 
-    decreaseSeats(sid, orderType === 'shared' ? personCount : 1);
+    decreaseSeats(sid, isWholeBoat ? 1 : personCount, isWholeBoat);
+
+    const breakdown: PriceBreakdown = {
+      boatFee: basePrice,
+      addOnFee: addOnTotal,
+      deposit,
+      total: totalPrice,
+    };
 
     const trip: TripRecord = {
       id: tripId,
@@ -155,13 +173,14 @@ const OrderPage: React.FC = () => {
       emergencyContact,
       addOns: selectedAddOns.map((a) => ({ name: a.name, price: a.price })),
       boardingCode: code,
+      priceBreakdown: breakdown,
       totalPrice,
-      status: 'upcoming',
+      status: 'pending_payment',
       createdAt: Date.now(),
     };
     addTrip(trip);
 
-    Taro.showToast({ title: '下单成功', icon: 'success' });
+    Taro.showToast({ title: '订单已创建', icon: 'success' });
     setTimeout(() => {
       Taro.redirectTo({ url: `/pages/trip/index?tripId=${tripId}` });
     }, 1500);
@@ -348,8 +367,12 @@ const OrderPage: React.FC = () => {
               <Text className={styles.priceRowValue}>¥{a.price}</Text>
             </View>
           ))}
+          <View className={styles.priceRow}>
+            <Text className={styles.priceRowLabel}>押金（船费20%）</Text>
+            <Text className={styles.priceRowValue}>¥{deposit}</Text>
+          </View>
           <View className={styles.totalRow}>
-            <Text className={styles.totalLabel}>合计</Text>
+            <Text className={styles.totalLabel}>应付金额</Text>
             <Text className={styles.totalValue}>¥{totalPrice}</Text>
           </View>
         </View>
@@ -363,7 +386,7 @@ const OrderPage: React.FC = () => {
 
       <View className={styles.bottomBar}>
         <View className={styles.bottomPriceInfo}>
-          <Text className={styles.bottomTotalLabel}>合计</Text>
+          <Text className={styles.bottomTotalLabel}>应付</Text>
           <Text className={styles.bottomTotalPrice}>¥{totalPrice}</Text>
         </View>
         <View

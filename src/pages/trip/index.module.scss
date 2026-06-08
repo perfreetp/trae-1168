@@ -3,6 +3,7 @@
 .page {
   min-height: 100vh;
   background: $color-bg-page;
+  padding-bottom: 180rpx;
 }
 
 .statusHeader {
@@ -26,6 +27,10 @@
   padding: 4rpx 16rpx;
   border-radius: $radius-round;
   background: rgba(255, 255, 255, 0.2);
+}
+
+.statusBadgePending {
+  background: rgba(255, 152, 0, 0.35);
 }
 
 .statusBadgeText {
@@ -58,6 +63,18 @@
   font-weight: $font-weight-medium;
 }
 
+.metaLabelDark {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  width: 120rpx;
+}
+
+.metaValueDark {
+  font-size: $font-size-md;
+  color: $color-text-primary;
+  font-weight: $font-weight-medium;
+}
+
 .section {
   background: $color-bg-card;
   margin-top: $spacing-md;
@@ -70,6 +87,203 @@
   font-weight: $font-weight-semibold;
   color: $color-text-primary;
   margin-bottom: $spacing-md;
+}
+
+.paymentCountdownCard {
+  background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
+  margin-top: $spacing-md;
+  padding: $spacing-xl $page-padding;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.countdownLabel {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-bottom: $spacing-xs;
+}
+
+.countdownTime {
+  font-size: 64rpx;
+  font-weight: $font-weight-bold;
+  color: #E65100;
+  letter-spacing: 4rpx;
+}
+
+.countdownHint {
+  font-size: $font-size-xs;
+  color: #BF360C;
+  margin-top: $spacing-xs;
+  opacity: 0.8;
+}
+
+.breakdownList {
+  display: flex;
+  flex-direction: column;
+}
+
+.breakdownRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-sm 0;
+}
+
+.breakdownLabel {
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+}
+
+.breakdownValue {
+  font-size: $font-size-md;
+  color: $color-text-primary;
+}
+
+.breakdownDivider {
+  height: 1rpx;
+  background: $color-divider;
+  margin: $spacing-sm 0;
+}
+
+.breakdownTotalLabel {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.breakdownTotalValue {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-price;
+}
+
+.bottomActions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-md $page-padding;
+  padding-bottom: calc(#{$spacing-md} + env(safe-area-inset-bottom));
+  background: $color-bg-card;
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.cancelOrderBtn {
+  @include button-reset;
+  flex: 1;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  background: $color-bg-page;
+  border: 1rpx solid $color-border;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+.cancelOrderBtnText {
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  font-weight: $font-weight-medium;
+}
+
+.payBtn {
+  @include button-reset;
+  flex: 2;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+}
+
+.payBtnText {
+  font-size: $font-size-lg;
+  color: $color-text-white;
+  font-weight: $font-weight-semibold;
+}
+
+.refundEntry {
+  background: $color-bg-card;
+  margin-top: $spacing-md;
+  padding: $spacing-lg $page-padding;
+  display: flex;
+  align-items: center;
+  box-shadow: $shadow-card;
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+.refundEntryText {
+  font-size: $font-size-md;
+  color: $color-error;
+  font-weight: $font-weight-medium;
+  flex: 1;
+}
+
+.refundEntryHint {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  margin-right: $spacing-sm;
+}
+
+.refundEntryArrow {
+  font-size: $font-size-lg;
+  color: $color-text-tertiary;
+}
+
+.refundCard {
+  background: $color-bg-page;
+  border-radius: $radius-md;
+  padding: $spacing-md;
+}
+
+.refundRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-sm 0;
+
+  &:first-child {
+    padding-top: 0;
+  }
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+}
+
+.refundLabel {
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+}
+
+.refundValue {
+  font-size: $font-size-md;
+  color: $color-price;
+  font-weight: $font-weight-semibold;
+}
+
+.refundStatus {
+  font-size: $font-size-sm;
+  color: #F57C00;
+  font-weight: $font-weight-medium;
+}
+
+.refundHint {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
 }
 
 .meetingCard {
